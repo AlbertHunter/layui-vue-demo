@@ -1,11 +1,39 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import Base from '@/views/public/Base'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    redirect: '/dashboard'
+  },
+  {
+    path: '/dashboard',
+    redirect: '/dashboard/index',
+    name: 'Dashboard',
+    component: Base,
+    children: [
+      {
+        path: '/dashboard/index',
+        component: () => import(/* webpackChunkName: "dashboard" */ '../views/dashboard/Index.vue'),
+      }
+    ]
+  },
+  {
+    path: '/articles',
+    redirect: '/articles/index',
+    name: 'Articles',
+    // component: () => import(/* webpackChunkName: "home" */ '../views/article/Articles.vue'),
+    component: Base,
+    children: [
+      {
+        path: '/articles/index',
+        component: () => import(/* webpackChunkName: "home" */ '../views/article/Articles.vue'),
+      },
+      {
+        path: '/articles/add',
+        component: () => import(/* webpackChunkName: "home" */ '../views/article/AddArticle.vue'),
+      }
+    ]
   },
   {
     path: '/about',
