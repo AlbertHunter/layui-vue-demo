@@ -22,18 +22,27 @@ const routes = [
     path: '/articles',
     redirect: '/articles/index',
     name: 'Articles',
-    // component: () => import(/* webpackChunkName: "home" */ '../views/article/Articles.vue'),
+    // component: () => import(/* webpackChunkName: "articles" */ '../views/article/Articles.vue'),
     component: Base,
     children: [
       {
         path: '/articles/index',
-        component: () => import(/* webpackChunkName: "home" */ '../views/article/Articles.vue'),
+        component: () => import(/* webpackChunkName: "articles" */ '../views/article/Articles.vue'),
       },
       {
         path: '/articles/add',
-        component: () => import(/* webpackChunkName: "home" */ '../views/article/AddArticle.vue'),
+        component: () => import(/* webpackChunkName: "articles" */ '../views/article/AddArticle.vue'),
       }
     ]
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "login" */ '../views/login/Login.vue'),
+    beforeEnter (to, from, next) {
+      const { isLogin } = localStorage
+      isLogin ? next({ path: '/' }) : next()
+    }
   },
   {
     path: '/about',
@@ -48,6 +57,10 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+router.beforeEach((to, from, next) => {
+  const { isLogin } = localStorage;
+  (isLogin || (to.name === 'Login' || to.name === 'Register')) ? next() : next({ name: 'Login' })
 })
 
 export default router

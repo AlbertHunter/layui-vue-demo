@@ -1,4 +1,4 @@
-# admin.demo02.me
+# seo-tool
 
 ## Project setup
 ```
