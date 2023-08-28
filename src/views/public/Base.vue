@@ -1,5 +1,5 @@
 <template>
-    <lay-layout class="layout">
+    <lay-layout class="layout container-base">
       <div class="layout__left">
         <lay-header>网站管理</lay-header>
         <lay-switch v-model="menuConf.collapse"></lay-switch>
@@ -7,30 +7,34 @@
       </div>
       <lay-layout class="layout__right">
         <lay-header>
-            header
+            <Header/>
         </lay-header>
         <lay-body><LayBody/></lay-body>
       </lay-layout>
     </lay-layout>
 </template>
-  
+
 <script>
-    import { ref } from 'vue'
-    import Menu from './Menu.vue'
-    import LayBody from './LayBody.vue'
-    export default {
-        name: 'Base',
-        components: { Menu, LayBody },
-        setup() {
-            const menuConf = ref({})
-            menuConf.collapse = true
-            return {
-                menuConf
-            }
+import { ref } from 'vue'
+import Header from './Header'
+import Menu from './Menu.vue'
+import LayBody from './LayBody.vue'
+export default {
+    name: 'Base',
+    components: { Header, Menu, LayBody },
+    setup() {
+        const menuConf = ref({})
+        menuConf.collapse = true
+        return {
+            menuConf
         }
     }
+}
 </script>
 <style lang="scss" scoped>
+  .container-base {
+    height: 100vh;
+  }
   .layout .layui-header {
     line-height: 60px;
     text-align: center;

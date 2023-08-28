@@ -13,7 +13,7 @@
 				<div class="login-container__submit">
 					<lay-button type="primary" @click="submit" fluid>登录</lay-button>
 				</div>
-			</lay-form> 
+			</lay-form>
 		</div>
     </div>
   </lay-container>
@@ -30,7 +30,7 @@ const useCommonEffect = () => {
 		if ( length < 6 || length > 16 ) callback(new Error(`${rule.field}长度需要在8和16之间`))
 		const regexp = /^[A-Za-z0-9]{6,16}$/
 		if (!regexp.test(value)) callback(new Error(`${rule.field}格式错误`))
-		return true		
+		return true
 	}
 	return { validateForm }
 }
@@ -61,19 +61,21 @@ const submit = () => {
 //   layer.msg(`${JSON.stringify(model)}`, { time: 2000 })
 	formFields.value.validate((isValidate, model, errors) => {
 		console.log(isValidate, model, errors)
-		if (!isValidate) return false
+		if (!isValidate) {
+      layer.open({
+        type: 1,
+        title:"表单提交结果",
+        content: `<div style="padding: 10px"><p>是否通过 : ${isValidate}</p> <p>表单数据 : ${JSON.stringify(model)} </p> <p>错误信息 : ${JSON.stringify(errors)}</p></div>`,
+        shade: false,
+        isHtmlFragment: true,
+        btn : [{ text: '确认', callback(index) {  layer.close(index) }}],
+        area : '500px'
+      });
+      return false
+    }
 		localStorage.isLogin = true
 		router.push({ name: 'Dashboard' })
-		layer.open({
-			type: 1,
-			title:"表单提交结果", 
-			content: `<div style="padding: 10px"><p>是否通过 : ${isValidate}</p> <p>表单数据 : ${JSON.stringify(model)} </p> <p>错误信息 : ${JSON.stringify(errors)}</p></div>`, 
-			shade: false,
-			isHtmlFragment: true,
-			btn : [{ text: '确认', callback(index) {  layer.close(index) }}],
-			area : '500px'
-    	});
-  	});
+  });
 }
 </script>
 <style lang="scss" scoped>

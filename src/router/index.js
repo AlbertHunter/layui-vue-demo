@@ -36,6 +36,34 @@ const routes = [
     ]
   },
   {
+    path: '/orders',
+    redirect: '/orders/index',
+    name: 'Orders',
+    component: Base,
+    children: [
+      {
+        path: '/orders/index',
+        component: () => import(/* webpackChunkName: "orders" */ '../views/order/OrderIndex.vue'),
+      }
+    ]
+  },
+  {
+    path: '/member',
+    redirect: '/member/index',
+    name: 'Member',
+    component: Base,
+    children: [
+      {
+        path: '/member/index',
+        component: () => import(/* webpackChunkName: "member" */ '../views/member/Index.vue'),
+      },
+      {
+        path: '/member/loginLog',
+        component: () => import(/* webpackChunkName: "member" */ '../views/member/LoginLog.vue'),
+      }
+    ]
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import(/* webpackChunkName: "login" */ '../views/login/Login.vue'),
