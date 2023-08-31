@@ -2,12 +2,11 @@
     <lay-layout class="layout container-base">
       <div class="layout__left">
         <lay-header>网站管理</lay-header>
-        <lay-switch v-model="menuConf.collapse"></lay-switch>
         <Menu :conf="menuConf"></Menu>
       </div>
       <lay-layout class="layout__right">
         <lay-header>
-            <Header/>
+            <Header :conf="menuConf" :collapse="collapse" @collapseMenu="collapseMenu" />
         </lay-header>
         <lay-body><LayBody/></lay-body>
       </lay-layout>
@@ -15,7 +14,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import Header from './Header'
 import Menu from './Menu.vue'
 import LayBody from './LayBody.vue'
@@ -23,10 +22,17 @@ export default {
     name: 'Base',
     components: { Header, Menu, LayBody },
     setup() {
-        const menuConf = ref({})
-        menuConf.collapse = true
+        const menuConf = reactive({})
+        menuConf.collapse = false
+        const collapse = ref(true)
+        const collapseMenu = () => {
+          console.log('emit')
+          menuConf.collapse = !menuConf.collapse
+        }
         return {
-            menuConf
+            menuConf,
+            collapse,
+            collapseMenu
         }
     }
 }

@@ -1,6 +1,8 @@
 <template>
   <lay-row>
-    <lay-col md="18">&nbsp;</lay-col>
+    <lay-col md="18" class="header-left">
+      <lay-icon :type="conf.collapse ? 'layui-icon-spread-left' : 'layui-icon-shrink-right'" @click="collapseMenu"></lay-icon>
+    </lay-col>
     <lay-col md="6">
       <lay-menu theme="light">
         <lay-menu-item>
@@ -20,6 +22,29 @@
 
 </template>
 <script setup>
-import { ref } from 'vue'
-const collapse = ref(true)
+import { toRefs, defineEmits } from 'vue'
+const props = defineProps({
+  conf: {
+      type: Object
+  },
+  collapse: {
+    type: Boolean
+  }
+})
+const emit = defineEmits(["collapseMenu"])
+const collapse = toRefs(props)
+console.log(collapse)
+const { conf } = props
+console.log(conf)
+console.log(conf.collapse)
+console.log(props.collapse)
+const collapseMenu = () => {
+  emit("collapseMenu")
+}
 </script>
+<style lang="scss" scoped>
+.header-left {
+  text-align: left;
+  text-indent: .2rem;
+}
+</style>

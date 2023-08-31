@@ -40,8 +40,12 @@
 <script setup name="Menu">
 import { ref } from 'vue'
 const props = defineProps({
-  conf: Boolean
+  conf: {
+    type: Object
+  }
 })
+// const conf = props; 
+// console.log(props.conf.collapse)
 const selectedKey = ref("1")
 const openKeys = ref([])
 const isTree = ref(true)
