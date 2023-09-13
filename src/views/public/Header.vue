@@ -12,7 +12,9 @@
           <template #title>
             <lay-icon type="layui-icon-username"></lay-icon>Marx
           </template>
-          <lay-menu-item>用户信息</lay-menu-item>
+          <lay-menu-item>
+            <router-link to="/user/index">用户信息</router-link>
+          </lay-menu-item>
           <lay-menu-item>退出登录</lay-menu-item>
         </lay-sub-menu>
       </lay-menu>
@@ -22,7 +24,7 @@
 
 </template>
 <script setup>
-import { toRefs, defineEmits } from 'vue'
+import { toRefs } from 'vue'
 const props = defineProps({
   conf: {
       type: Object

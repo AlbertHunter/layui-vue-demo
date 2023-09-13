@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
+import { ref, toRef, toRefs, reactive } from 'vue'
 import Header from './Header'
 import Menu from './Menu.vue'
 import LayBody from './LayBody.vue'
@@ -29,6 +29,8 @@ export default {
           console.log('emit')
           menuConf.collapse = !menuConf.collapse
         }
+        const obj = toRefs(menuConf)
+        console.log(obj.collapse.value)
         return {
             menuConf,
             collapse,
