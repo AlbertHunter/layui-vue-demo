@@ -8,7 +8,9 @@
         <lay-header>
             <Header :conf="menuConf" :collapse="collapse" @collapseMenu="collapseMenu" />
         </lay-header>
-        <lay-body><LayBody/></lay-body>
+        <lay-body>
+            <BodyContent/>
+        </lay-body>
       </lay-layout>
     </lay-layout>
 </template>
@@ -17,10 +19,10 @@
 import { ref, toRef, toRefs, reactive } from 'vue'
 import Header from './Header'
 import Menu from './Menu.vue'
-import LayBody from './LayBody.vue'
+import BodyContent from './LayBody.vue'
 export default {
     name: 'Base',
-    components: { Header, Menu, LayBody },
+    components: { Header, Menu, BodyContent },
     setup() {
         const menuConf = reactive({})
         menuConf.collapse = false
@@ -40,13 +42,15 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  body {
+    color: #000000d9;
+  }
   .container-base {
     height: 100vh;
   }
   .layout .layui-header {
     line-height: 60px;
     text-align: center;
-    margin-bottom: .1rem;
   }
   .layout {
     display: flex;
@@ -65,9 +69,9 @@ export default {
         .layui-body {
             display: flex;
             background: #fff;
-            align-items: center;
+            margin: .1rem;
+            padding: .15rem;
             justify-content: center;
-            color: white;
         }
         background: #ebebeb;
         flex: 1;

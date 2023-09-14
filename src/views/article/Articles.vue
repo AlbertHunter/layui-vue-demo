@@ -1,15 +1,15 @@
 <template>
-  <lay-table 
-      id="id" 
+  <lay-table
+      id="id"
       :max-height="maxHeight5"
-      :columns="columns5" 
-      :expand-index="1" 
-      :data-source="dataSource5" 
-      :checkbox="checkbox5" :page="page5" 
+      :columns="columns5"
+      :expand-index="1"
+      :data-source="dataSource5"
+      :checkbox="checkbox5" :page="page5"
       :default-toolbar="defaultToolbar5"
       :resize="true"
       :autoColsWidth="true"
-      v-model:selected-keys="selectedKeys5"  
+      v-model:selected-keys="selectedKeys5"
       @row="rowClick5"
       @change="change555">
     <template v-slot:toolbar>
@@ -81,7 +81,7 @@ export default {
         key:"operator"
       }
     ]
-    }, 2000)
+    }, 100)
 
     const dataSource5 = [
       {id:"1", name:"小明", age:"18",remark: 'layui - vue（谐音：类 UI) 是 一 套 Vue 3.0 的 桌 面 端 组 件 库.layui - vue（谐音：类 UI) 是 一 套 Vue 3.0 的 桌 面 端 组 件 库.'},
@@ -95,7 +95,7 @@ export default {
     const rowClick5 = function(data) {
       console.log(JSON.stringify(data))
     }
-    
+
     const rowDoubleClick5 = function(data) {
       console.log(JSON.stringify(data))
     }
