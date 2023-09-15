@@ -2,7 +2,7 @@
     <lay-menu v-model:selected-key="selectedKey" v-model:tree="isTree" v-model:open-keys="openKeys" :collapse="conf.collapse">
         <template v-for="item in menuData"  :key="item.id">
           <div v-if="!item.hasOwnProperty('children')">
-            <router-link :to="item.link">
+            <router-link :to="item.link" @click="() => addTabMenu(item)">
                 <lay-menu-item :id="item.id">
                   <template #icon>
                       <lay-icon :type="item.icon"></lay-icon>
@@ -20,7 +20,7 @@
               </template>
               <template #title> {{ item.title }} </template>
               <template :id="row.id" v-for="row in item.children" :key="row.id">
-                <router-link :to="row.link">
+                <router-link :to="row.link" @click="() => addTabMenu(item)">
                   <lay-menu-item  class="sub-menu" :id="row.id">
                     <template #icon>
                       <lay-icon :type="row.icon"></lay-icon>
@@ -44,7 +44,7 @@ const props = defineProps({
     type: Object
   }
 })
-// const conf = props; 
+// const conf = props;
 // console.log(props.conf.collapse)
 const selectedKey = ref("1")
 const openKeys = ref([])
@@ -86,6 +86,10 @@ const menuData = [
     ]
   }
 ]
+const addTabMenu = (item) => {
+  console.log(123);
+  console.log(item);
+}
 </script>
 <style lang='scss' scoped>
 .sub-menu {

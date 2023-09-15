@@ -14,6 +14,9 @@ const routes = [
     children: [
       {
         path: '/dashboard/index',
+        meta: {
+          title: '首页',
+        },
         component: () => import(/* webpackChunkName: "dashboard" */ '../views/dashboard/Index.vue'),
       }
     ]
@@ -27,10 +30,16 @@ const routes = [
     children: [
       {
         path: '/articles/index',
+        meta: {
+          title: '文章列表',
+        },
         component: () => import(/* webpackChunkName: "articles" */ '../views/article/Articles.vue'),
       },
       {
         path: '/articles/add',
+        meta: {
+          title: '添加文章',
+        },
         component: () => import(/* webpackChunkName: "articles" */ '../views/article/AddArticle.vue'),
       }
     ]
@@ -43,6 +52,9 @@ const routes = [
     children: [
       {
         path: '/orders/index',
+        meta: {
+          title: '订单列表',
+        },
         component: () => import(/* webpackChunkName: "orders" */ '../views/order/OrderIndex.vue'),
       }
     ]
@@ -55,10 +67,14 @@ const routes = [
     children: [
       {
         path: '/member/index',
+        title: '会员列表',
         component: () => import(/* webpackChunkName: "member" */ '../views/member/Index.vue'),
       },
       {
         path: '/member/loginLog',
+        meta: {
+          title: '登录日志',
+        },
         component: () => import(/* webpackChunkName: "member" */ '../views/member/LoginLog.vue'),
       }
     ]
@@ -71,6 +87,9 @@ const routes = [
     children: [
       {
         path: '/User/index',
+        meta: {
+          title: '用户详情',
+        },
         component: () => import(/* webpackChunkName: "user" */ '../views/user/User.vue'),
       }
     ]
@@ -87,6 +106,9 @@ const routes = [
   {
     path: '/about',
     name: 'About',
+    meta: {
+      title: 'About',
+    },
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.

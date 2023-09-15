@@ -9,7 +9,27 @@
             <Header :conf="menuConf" :collapse="collapse" @collapseMenu="collapseMenu" />
         </lay-header>
         <lay-body>
+          <lay-tab type="card" allow-close class="tab-head-menu" v-model="current11">
+            <lay-tab-item :id="item.name" title="{item.title}" v-for="{item, index} in tabMenu" :key="index" :closable="false">
+              <div style="padding:20px">{{ item.title }}</div>
+            </lay-tab-item>
+            <lay-tab-item id="2" title="选项二" icon="layui-icon-console">
+              <div style="padding:20px">选项二</div>
+            </lay-tab-item>
+            <lay-tab-item id="3" title="选项三" :icon="renderIconFunc">
+              <div style="padding:20px">选项三</div>
+            </lay-tab-item>
+            <lay-tab-item id="4">
+              <template #title>
+                选项四
+                <lay-icon type="layui-icon-set" style="margin-left:8px"></lay-icon>
+              </template>
+              <div style="padding:20px">选项四</div>
+            </lay-tab-item>
+          </lay-tab>
+          <div class="global-content">
             <BodyContent/>
+          </div>
         </lay-body>
       </lay-layout>
     </lay-layout>
@@ -17,9 +37,11 @@
 
 <script>
 import { ref, toRef, toRefs, reactive } from 'vue'
+import { useRouter } from "vue-router"
 import Header from './Header'
 import Menu from './Menu.vue'
 import BodyContent from './LayBody.vue'
+import { useStore } from 'vuex'
 export default {
     name: 'Base',
     components: { Header, Menu, BodyContent },
@@ -33,10 +55,19 @@ export default {
         }
         const obj = toRefs(menuConf)
         console.log(obj.collapse.value)
-        return {
+
+      const router = useRouter()
+      console.log(router.currentRoute.value)
+      console.log(router.currentRoute.value.meta.title)
+
+      const store = useStore()
+      const { tabMenu } = store.state.tabMenu
+      console.log(tabMenu)
+      return {
             menuConf,
             collapse,
-            collapseMenu
+            collapseMenu,
+            tabMenu
         }
     }
 }
@@ -61,17 +92,26 @@ export default {
         color: white;
         width: auto!important;
         flex-basis: auto;
+      &__icon {
+        cursor: pointer;
+      }
     }
     &__right {
         .layui-header {
             background: #fff;
         }
         .layui-body {
-            display: flex;
+            justify-content: center;
+          .tab-head-menu {
+            background: #fff;
+            margin-top: 0;
+            border-top: 1px solid #f1f1f1;
+          }
+          .global-content {
             background: #fff;
             margin: .1rem;
             padding: .15rem;
-            justify-content: center;
+          }
         }
         background: #ebebeb;
         flex: 1;
