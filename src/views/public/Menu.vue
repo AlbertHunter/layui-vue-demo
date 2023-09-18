@@ -39,6 +39,8 @@
 
 <script setup name="Menu">
 import { ref } from 'vue'
+import { useStore } from 'vuex'
+import {useRouter} from "vue-router/dist/vue-router";
 const props = defineProps({
   conf: {
     type: Object
@@ -49,6 +51,18 @@ const props = defineProps({
 const selectedKey = ref("1")
 const openKeys = ref([])
 const isTree = ref(true)
+const store = useStore()
+
+
+const getMenus = () => {
+  const router = useRouter()
+  console.log(router.options.routes)
+  // for(const item of router) {
+  //   console.log(item)
+  // }
+  console.log('获取菜单')
+}
+getMenus()
 const menuData = [
   {
     id: 1,
@@ -87,8 +101,7 @@ const menuData = [
   }
 ]
 const addTabMenu = (item) => {
-  console.log(123);
-  console.log(item);
+  store.dispatch('addTabMenu', { item })
 }
 </script>
 <style lang='scss' scoped>

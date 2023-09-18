@@ -11,6 +11,7 @@ const routes = [
     redirect: '/dashboard/index',
     name: 'Dashboard',
     component: Base,
+    show: true,
     children: [
       {
         path: '/dashboard/index',
@@ -25,6 +26,8 @@ const routes = [
     path: '/articles',
     redirect: '/articles/index',
     name: 'Articles',
+    title: '内容管理',
+    show: true,
     // component: () => import(/* webpackChunkName: "articles" */ '../views/article/Articles.vue'),
     component: Base,
     children: [
@@ -33,6 +36,7 @@ const routes = [
         meta: {
           title: '文章列表',
         },
+        show: true,
         component: () => import(/* webpackChunkName: "articles" */ '../views/article/Articles.vue'),
       },
       {
@@ -49,6 +53,7 @@ const routes = [
     redirect: '/orders/index',
     name: 'Orders',
     component: Base,
+    show: true,
     children: [
       {
         path: '/orders/index',
@@ -64,10 +69,14 @@ const routes = [
     redirect: '/member/index',
     name: 'Member',
     component: Base,
+    show: true,
     children: [
       {
         path: '/member/index',
-        title: '会员列表',
+        meta: {
+          title: '会员列表',
+        },
+        show: true,
         component: () => import(/* webpackChunkName: "member" */ '../views/member/Index.vue'),
       },
       {
@@ -75,6 +84,7 @@ const routes = [
         meta: {
           title: '登录日志',
         },
+        show: true,
         component: () => import(/* webpackChunkName: "member" */ '../views/member/LoginLog.vue'),
       }
     ]

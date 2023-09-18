@@ -9,22 +9,8 @@
             <Header :conf="menuConf" :collapse="collapse" @collapseMenu="collapseMenu" />
         </lay-header>
         <lay-body>
-          <lay-tab type="card" allow-close class="tab-head-menu" v-model="current11">
-            <lay-tab-item :id="item.name" title="{item.title}" v-for="{item, index} in tabMenu" :key="index" :closable="false">
-              <div style="padding:20px">{{ item.title }}</div>
-            </lay-tab-item>
-            <lay-tab-item id="2" title="选项二" icon="layui-icon-console">
-              <div style="padding:20px">选项二</div>
-            </lay-tab-item>
-            <lay-tab-item id="3" title="选项三" :icon="renderIconFunc">
-              <div style="padding:20px">选项三</div>
-            </lay-tab-item>
-            <lay-tab-item id="4">
-              <template #title>
-                选项四
-                <lay-icon type="layui-icon-set" style="margin-left:8px"></lay-icon>
-              </template>
-              <div style="padding:20px">选项四</div>
+          <lay-tab type="card" allow-close class="tab-head-menu" v-model="current11" @change="changeTab" @close="closeTab">
+            <lay-tab-item :id="index" :title="item.title" v-for="(item, index) in tabMenu" :key="index" :closable="(index === 0) ? false : true">
             </lay-tab-item>
           </lay-tab>
           <div class="global-content">
@@ -61,13 +47,23 @@ export default {
       console.log(router.currentRoute.value.meta.title)
 
       const store = useStore()
-      const { tabMenu } = store.state.tabMenu
-      console.log(tabMenu)
+      const { tabMenu } = store.state
+      const current11 = ref(0)
+      const changeTab = (id) => {
+        const menu = tabMenu[id]
+        router.push(menu.path)
+      }
+      const closeTab = (id) => {
+        console.log('关闭Tab' + id)
+      }
       return {
             menuConf,
             collapse,
             collapseMenu,
-            tabMenu
+            tabMenu,
+            current11,
+            changeTab,
+            closeTab
         }
     }
 }
