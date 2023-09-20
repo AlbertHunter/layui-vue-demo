@@ -4,14 +4,24 @@ import Base from '@/views/public/Base'
 const routes = [
   {
     path: '/',
-    redirect: '/dashboard'
+    name: 'Home',
+    meta: {
+      title: '首页'
+    },
+    icon: 'layui-icon-console',
+    show: true,
+    redirect: '/dashboard/index'
   },
   {
     path: '/dashboard',
     redirect: '/dashboard/index',
     name: 'Dashboard',
+    meta: {
+      title: '控制台'
+    },
+    icon: 'layui-icon-console',
     component: Base,
-    show: true,
+    show: false,
     children: [
       {
         path: '/dashboard/index',
@@ -26,7 +36,10 @@ const routes = [
     path: '/articles',
     redirect: '/articles/index',
     name: 'Articles',
-    title: '内容管理',
+    meta: {
+      title: '内容管理'
+    },
+    icon: 'layui-icon-list',
     show: true,
     // component: () => import(/* webpackChunkName: "articles" */ '../views/article/Articles.vue'),
     component: Base,
@@ -52,6 +65,10 @@ const routes = [
     path: '/orders',
     redirect: '/orders/index',
     name: 'Orders',
+    meta: {
+      title: '订单管理'
+    },
+    icon: 'layui-icon-rmb',
     component: Base,
     show: true,
     children: [
@@ -60,6 +77,7 @@ const routes = [
         meta: {
           title: '订单列表',
         },
+        show: true,
         component: () => import(/* webpackChunkName: "orders" */ '../views/order/OrderIndex.vue'),
       }
     ]
@@ -68,6 +86,10 @@ const routes = [
     path: '/member',
     redirect: '/member/index',
     name: 'Member',
+    meta: {
+      title: '会员管理'
+    },
+    icon: 'layui-icon-user',
     component: Base,
     show: true,
     children: [
@@ -93,6 +115,9 @@ const routes = [
     path: '/user',
     redirect: '/user/index',
     name: 'User',
+    meta: {
+      title: '用户'
+    },
     component: Base,
     children: [
       {
@@ -107,6 +132,9 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
+    meta: {
+      title: '登录'
+    },
     component: () => import(/* webpackChunkName: "login" */ '../views/login/Login.vue'),
     beforeEnter (to, from, next) {
       const { isLogin } = localStorage

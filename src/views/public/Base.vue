@@ -9,8 +9,9 @@
             <Header :conf="menuConf" :collapse="collapse" @collapseMenu="collapseMenu" />
         </lay-header>
         <lay-body>
-          <lay-tab type="card" allow-close class="tab-head-menu" v-model="current11" @change="changeTab" @close="closeTab">
-            <lay-tab-item :id="index" :title="item.title" v-for="(item, index) in tabMenu" :key="index" :closable="(index === 0) ? false : true">
+          <lay-tab type="card" allow-close class="tab-head-menu" v-model="currentTab" @change="changeTab" @close="closeTab">
+            <lay-tab-item :id="item.id" :title="item.title" v-for="(item, index) in tabMenu" :key="index" :closable="(index === 0) ? false : true">
+              <div style="padding:20px">{{ item.id + item.title }}</div>
             </lay-tab-item>
           </lay-tab>
           <div class="global-content">
@@ -22,7 +23,7 @@
 </template>
 
 <script>
-import { ref, toRef, toRefs, reactive } from 'vue'
+import { ref, toRef, toRefs, reactive, watch, computed } from 'vue'
 import { useRouter } from "vue-router"
 import Header from './Header'
 import Menu from './Menu.vue'
@@ -47,21 +48,48 @@ export default {
       console.log(router.currentRoute.value.meta.title)
 
       const store = useStore()
-      const { tabMenu } = store.state
-      const current11 = ref(0)
+
+
+      const tabMenu = computed(() => {
+        return store.state.tabMenu
+      })
+      const currentTab = computed(() => store.state.currentTab)
       const changeTab = (id) => {
-        const menu = tabMenu[id]
+        let menu = []
+        for(const item of tabMenu.value) {
+          if(item.id === id) {
+            menu = item
+            break
+          }
+        }
         router.push(menu.path)
+        store.state.currentTab = id
+      }
+      const onBeforeCloseTab = (id) => {
+          console.log(id)
       }
       const closeTab = (id) => {
-        console.log('关闭Tab' + id)
+          const nextId = parseInt(id + 1)
+          const prevId = parseInt(id - 1)
+        // const tabArr =tabMenu.value
+        console.log(currentTab)
+/*        if(currentTab.value === id) {
+          store.state.currentTab = id -1
+        }else {
+          store.state.currentTab = 2
+        }*/
+        store.dispatch('closeTabMenu', { id })
+        console.log(tabMenu)
+        // const menu = tabArr[nextId] ? tabArr[nextId] : tabArr[prevId]
+        // router.push(menu.path)
+        // console.log(tabArr)
       }
       return {
             menuConf,
             collapse,
             collapseMenu,
             tabMenu,
-            current11,
+            currentTab,
             changeTab,
             closeTab
         }

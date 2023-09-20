@@ -1,32 +1,32 @@
 <template>
     <lay-menu v-model:selected-key="selectedKey" v-model:tree="isTree" v-model:open-keys="openKeys" :collapse="conf.collapse">
-        <template v-for="item in menuData"  :key="item.id">
+        <template v-for="(item, index) in menuData"  :key="item.path">
           <div v-if="!item.hasOwnProperty('children')">
-            <router-link :to="item.link" @click="() => addTabMenu(item)">
-                <lay-menu-item :id="item.id">
+            <router-link :to="item.path" @click="() => addTabMenu(item)">
+                <lay-menu-item :id="item.path">
                   <template #icon>
                       <lay-icon :type="item.icon"></lay-icon>
                   </template>
                   <template #title>
-                      {{ item.title }}
+                      {{ item.meta.title }}
                   </template>
                 </lay-menu-item>
             </router-link>
           </div>
           <div v-else>
-            <lay-sub-menu title="菜单">
+            <lay-sub-menu :title="item.meta.title" :id="item.path">
               <template #icon>
                 <lay-icon :type="item.icon"></lay-icon>
               </template>
-              <template #title> {{ item.title }} </template>
-              <template :id="row.id" v-for="row in item.children" :key="row.id">
-                <router-link :to="row.link" @click="() => addTabMenu(item)">
-                  <lay-menu-item  class="sub-menu" :id="row.id">
+              <template #title> {{ item.meta.title }} </template>
+              <template :id="row.path + index" v-for="(row, i) in item.children" :key="row.path">
+                <router-link :to="row.path" @click="() => addTabMenu(row)">
+                  <lay-menu-item  class="sub-menu" :id="row.path">
                     <template #icon>
                       <lay-icon :type="row.icon"></lay-icon>
                     </template>
                     <template #title>
-                      {{ row.title }}
+                      {{ row.meta.title }}
                     </template>
                   </lay-menu-item>
                 </router-link>
@@ -41,68 +41,76 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import {useRouter} from "vue-router/dist/vue-router";
+const router = useRouter()
+const store = useStore()
 const props = defineProps({
   conf: {
     type: Object
   }
 })
-// const conf = props;
-// console.log(props.conf.collapse)
-const selectedKey = ref("1")
-const openKeys = ref([])
-const isTree = ref(true)
-const store = useStore()
 
-
-const getMenus = () => {
-  const router = useRouter()
-  console.log(router.options.routes)
-  // for(const item of router) {
-  //   console.log(item)
-  // }
-  console.log('获取菜单')
-}
-getMenus()
-const menuData = [
-  {
-    id: 1,
-    title: '首页',
-    link: '/dashboard',
-    icon: 'layui-icon-console'
-  },{
-    id: 2,
-    title: '文章列表',
-    link: '/articles',
-    icon: 'layui-icon-list'
-  },{
-    id: 3,
-    title: '订单管理',
-    link: '/orders',
-    icon: 'layui-icon-rmb'
-  },{
-    id:4,
-    title: '会员管理',
-    link: '/member',
-    icon: 'layui-icon-user',
-    children: [
-      {
-        id: 401,
-        title: '会员列表',
-        link: '/member/index',
-        icon: 'layui-icon-user'
-      },
-      {
-        id: 402,
-        title: '登录日志',
-        link: '/member/loginLog',
-        icon: 'layui-icon-log'
+const useMenuEffect = () => {
+  const isTree = ref(true)
+  const selectedKey = ref(0)
+  const openKeys = ref([])
+  //从路由获取菜单
+  const getMenus = () => {
+    const routeList = router.options.routes
+    const menuArr = []
+    let i = 0
+    for(const item of routeList) {
+      if(item?.show) {
+        i++
+        item.id = i
+        if(item.hasOwnProperty('children')) {
+          const children = item.children.filter((row) => row?.show)
+          item.children = children.map((v, index) => {
+            v.id = i * 100 + index
+            return v
+          })
+        }
+        menuArr.push(item)
+      } else {
+        continue
       }
-    ]
+    }
+    return menuArr
   }
-]
-const addTabMenu = (item) => {
-  store.dispatch('addTabMenu', { item })
+  //设置菜单选中
+  const selectedMenu = () => {
+    //当前路径
+    const path = router.currentRoute.value.path
+    for(const item of menuData) {
+      const menu_path = item?.redirect ? item?.redirect : item?.path
+      if(item.hasOwnProperty('children')) {
+        const subMenu = item.children
+        subMenu.map((row) => {
+          if(row.path === path){
+            selectedKey.value = row.path
+            openKeys.value = item.path
+            addTabMenu(row)
+          }
+        })
+      } else {
+        if(path === menu_path) {
+          selectedKey.value = item.path
+          addTabMenu(item)
+          break
+        }
+      }
+    }
+  }
+  //菜单添加到Tab
+  const addTabMenu = (item) => {
+    store.dispatch('addTabMenu', { item })
+  }
+  return { isTree, selectedKey, openKeys, getMenus, selectedMenu, addTabMenu }
 }
+
+const { isTree, selectedKey, openKeys, getMenus, selectedMenu, addTabMenu } = useMenuEffect()
+const menuData = getMenus()
+selectedMenu()
+
 </script>
 <style lang='scss' scoped>
 .sub-menu {
