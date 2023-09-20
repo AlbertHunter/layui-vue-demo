@@ -1,6 +1,6 @@
 <template>
     <lay-menu v-model:selected-key="selectedKey" v-model:tree="isTree" v-model:open-keys="openKeys" :collapse="conf.collapse">
-        <template v-for="(item, index) in menuData"  :key="item.path">
+        <template v-for="item in menuData"  :key="item.path">
           <div v-if="!item.hasOwnProperty('children')">
             <router-link :to="item.path" @click="() => addTabMenu(item)">
                 <lay-menu-item :id="item.path">
@@ -19,7 +19,7 @@
                 <lay-icon :type="item.icon"></lay-icon>
               </template>
               <template #title> {{ item.meta.title }} </template>
-              <template :id="row.path + index" v-for="(row, i) in item.children" :key="row.path">
+              <template v-for="row in item.children" :key="row.path">
                 <router-link :to="row.path" @click="() => addTabMenu(row)">
                   <lay-menu-item  class="sub-menu" :id="row.path">
                     <template #icon>

@@ -19,7 +19,6 @@ export default createStore({
     tabMenu: [
       {
         "id": 1,
-        "name": "Home",
         "title": "首页",
         "path": "/dashboard/index"
       }
@@ -54,15 +53,20 @@ export default createStore({
       const menus = state.tabMenu.map(v => v)
       console.log(id, menus)
       state.tabMenu = []
+      const newArr = []
       for(const item of menus) {
-        if(item.id === id) continue
-        state.tabMenu.push(item)
+        if(item.id !== id) {
+          console.log(item)
+          state.tabMenu.push(item)
+          newArr.push(item)
+        }
       }
+      // state.tabMenu.splice(0, state.tabMenu.length, ...newArr)
       // setLocalStorageTabMenu(state)
       // state.tabMenu = newArr
       // state.tabMenu.filter((item) => item.id !== id )
       // state.tabMenu.push(newArr)
-      return
+      // return
 
 /*      const newArr = state.tabMenu.toSpliced(1, 1)
       console.log(newArr)
