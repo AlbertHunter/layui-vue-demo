@@ -23,7 +23,16 @@ export default createStore({
         "path": "/dashboard/index"
       }
     ],
-    currentTab: 0
+    tabList: {
+      1:  {
+        "id": 1,
+        "title": "首页",
+        "path": "/dashboard/index"
+      }
+    },
+    currentTab: 0,
+    selectedMenuKey: 0,
+    openMenuKey: []
   },
   mutations: {
     addTabMenu (state, payload) {
@@ -33,45 +42,16 @@ export default createStore({
         "title": item.title || item.meta.title,
         "path": item.path
       }
-      const menus = state.tabMenu
-      console.log(menus)
-      for(const row of menus) {
-        if(row.id === item.id) {
-          state.currentTab = row.id
-          return
-        }
+      if(typeof state.tabList[item.id] === 'undefined') {
+        state.tabList[item.id] = data
       }
-      state.tabMenu.push(data)
       state.currentTab = item.id
-      // setLocalStorageTabMenu(state)
     },
     closeTabMenu (state, payload) {
       const { id } = payload
-      // state.tabMenu = []
-      // state.tabMenu.filter((item) => item.id !== id )
-      // return
-      const menus = state.tabMenu.map(v => v)
-      console.log(id, menus)
-      state.tabMenu = []
-      const newArr = []
-      for(const item of menus) {
-        if(item.id !== id) {
-          console.log(item)
-          state.tabMenu.push(item)
-          newArr.push(item)
-        }
-      }
-      // state.tabMenu.splice(0, state.tabMenu.length, ...newArr)
-      // setLocalStorageTabMenu(state)
-      // state.tabMenu = newArr
-      // state.tabMenu.filter((item) => item.id !== id )
-      // state.tabMenu.push(newArr)
-      // return
-
-/*      const newArr = state.tabMenu.toSpliced(1, 1)
-      console.log(newArr)
-      state.tabMenu.splice(0, state.tabMenu.length, ...newArr)
-      state.tabMenu = newArr*/
+      const newObj = Object.assign({}, state.tabList)
+      if(typeof newObj[id] !== 'undefined') delete newObj[id]
+      state.tabList = newObj
     },
     changeTabMenu ( state, payload) {
       const { id } = payload

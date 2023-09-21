@@ -41,6 +41,7 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import {useRouter} from "vue-router/dist/vue-router";
+import useCommonMenuEffect from '@/effects/menuEffect'
 const router = useRouter()
 const store = useStore()
 const props = defineProps({
@@ -48,34 +49,16 @@ const props = defineProps({
     type: Object
   }
 })
-
+const { getMenus } = useCommonMenuEffect()
 const useMenuEffect = () => {
   const isTree = ref(true)
   const selectedKey = ref(0)
   const openKeys = ref([])
-  //从路由获取菜单
-  const getMenus = () => {
-    const routeList = router.options.routes
-    const menuArr = []
-    let i = 0
-    for(const item of routeList) {
-      if(item?.show) {
-        i++
-        item.id = i
-        if(item.hasOwnProperty('children')) {
-          const children = item.children.filter((row) => row?.show)
-          item.children = children.map((v, index) => {
-            v.id = i * 100 + index
-            return v
-          })
-        }
-        menuArr.push(item)
-      } else {
-        continue
-      }
-    }
-    return menuArr
-  }
+
+
+  // const selectedMenuKey = computet(() => store.state.selectedMenuKey)
+  // const openMenuKeys = computet(() => store.state.openMenuKey)
+  
   //设置菜单选中
   const selectedMenu = () => {
     //当前路径
@@ -104,11 +87,12 @@ const useMenuEffect = () => {
   const addTabMenu = (item) => {
     store.dispatch('addTabMenu', { item })
   }
-  return { isTree, selectedKey, openKeys, getMenus, selectedMenu, addTabMenu }
+  return { isTree, selectedKey, openKeys, selectedMenu, addTabMenu }
 }
 
-const { isTree, selectedKey, openKeys, getMenus, selectedMenu, addTabMenu } = useMenuEffect()
+const { isTree, selectedKey, openKeys, selectedMenu, addTabMenu } = useMenuEffect()
 const menuData = getMenus()
+console.log(menuData)
 selectedMenu()
 
 </script>

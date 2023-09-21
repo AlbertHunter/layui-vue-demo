@@ -9,10 +9,8 @@
             <Header :conf="menuConf" :collapse="collapse" @collapseMenu="collapseMenu" />
         </lay-header>
         <lay-body>
-          <lay-tab type="card" allow-close class="tab-head-menu" v-model="currentTab" @change="changeTab" @close="closeTab">
-            <lay-tab-item :id="item.id" :title="item.title" v-for="(item, index) in tabMenu" :key="index" :closable="(index === 0) ? false : true">
-              <div style="padding:20px">{{ item.id + item.title }}</div>
-            </lay-tab-item>
+          <lay-tab type="card" allow-close class="tab-head-menu" v-model="currentTab" @change="changeTab" :beforeLeave="beforeLeaveTab" :beforeClose="beforeCloseTab" @close="closeTab">
+            <lay-tab-item :id="item.id" :title="item.title" v-for="(item, index) in tabMenu" :key="index" :closable="(item.id === 1) ? false : true"></lay-tab-item>
           </lay-tab>
           <div class="global-content">
             <BodyContent/>
@@ -23,17 +21,21 @@
 </template>
 
 <script>
-import { ref, toRef, toRefs, reactive, watch, computed } from 'vue'
+import { ref, toRef, toRefs, reactive, computed } from 'vue'
 import { useRouter } from "vue-router"
+import { useStore } from 'vuex'
 import Header from './Header'
 import Menu from './Menu.vue'
 import BodyContent from './LayBody.vue'
-import { useStore } from 'vuex'
+import useCommonMenuEffect from '@/effects/menuEffect'
 export default {
     name: 'Base',
     components: { Header, Menu, BodyContent },
     setup() {
-        const menuConf = reactive({})
+      const router = useRouter()
+      const store = useStore()
+      const { getMenus } = useCommonMenuEffect()
+      const menuConf = reactive({})
         menuConf.collapse = false
         const collapse = ref(true)
         const collapseMenu = () => {
@@ -43,46 +45,81 @@ export default {
         const obj = toRefs(menuConf)
         console.log(obj.collapse.value)
 
-      const router = useRouter()
-      console.log(router.currentRoute.value)
-      console.log(router.currentRoute.value.meta.title)
-
-      const store = useStore()
 
 
       const tabMenu = computed(() => {
-        return store.state.tabMenu
+        return store.state.tabList
       })
+      const tabList = computed(() => store.state.tabList)
       const currentTab = computed(() => store.state.currentTab)
       const changeTab = (id) => {
-        let menu = []
-        for(const item of tabMenu.value) {
-          if(item.id === id) {
-            menu = item
-            break
-          }
+        let menu = {}
+        if(tabList.value.hasOwnProperty(id)) {
+          menu = tabList.value[id]
+          router.push(menu.path)
         }
-        router.push(menu.path)
         store.state.currentTab = id
+        selectedMenu(id)
       }
-      const onBeforeCloseTab = (id) => {
-          console.log(id)
+
+
+      // const selectedMenu = (id) => {
+      //   const menuData = getMenus()
+      //   const currentMenu = tabList.value[id]
+      //   const currentMenuPath = currentMenu.path
+      //   console.log(menuData)
+      //   console.log(currentMenuPath)
+      //   console.log(id)
+
+      //   for(const item of menuData) {
+      //     const menu_path = item?.redirect ? item?.redirect : item?.path
+      //     if(item.hasOwnProperty('children')) {
+      //       const subMenu = item.children
+      //       subMenu.map((row) => {
+      //         if(row.path === path){
+      //           selectedKey.value = row.path
+      //           openKeys.value = item.path
+      //         }
+      //       })
+      //     } else {
+      //       if(path === menu_path) {
+      //         selectedKey.value = item.path
+      //         break
+      //       }
+      //     }
+      //   }
+
+      // }
+
+
+      const beforeLeaveTab = (id) => {
+        console.log(id)
+      }
+
+      const beforeCloseTab = (id) => {
+        console.log(id, currentTab.value)
+        const currentId = currentTab.value
+
+        if(currentId === id) {
+          // const k =
+          const tabObj = tabList.value
+          Object.keys(tabObj).forEach((k) => {
+            console.log(k, tabObj[k])
+          }) 
+        }
+        // return false
       }
       const closeTab = (id) => {
           const nextId = parseInt(id + 1)
           const prevId = parseInt(id - 1)
         // const tabArr =tabMenu.value
-        console.log(currentTab)
+
 /*        if(currentTab.value === id) {
           store.state.currentTab = id -1
         }else {
           store.state.currentTab = 2
         }*/
         store.dispatch('closeTabMenu', { id })
-        console.log(tabMenu)
-        // const menu = tabArr[nextId] ? tabArr[nextId] : tabArr[prevId]
-        // router.push(menu.path)
-        // console.log(tabArr)
       }
       return {
             menuConf,
@@ -91,6 +128,8 @@ export default {
             tabMenu,
             currentTab,
             changeTab,
+            beforeCloseTab,
+            beforeLeaveTab,
             closeTab
         }
     }
