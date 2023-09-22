@@ -60,7 +60,8 @@ const useMenuEffect = () => {
     get: () => store.state.openMenuKey,
     set: (val) => store.state.openMenuKey = val
   })
- 
+  const tabList = computed(() => store.state.tabList)
+
   //设置菜单选中
   const selectedMenu = () => {
     //当前路径
@@ -77,6 +78,14 @@ const useMenuEffect = () => {
             const openKey = item.path
             store.dispatch('selectedMenu', { selectedKey, openKey })         
             addTabMenu(row)
+
+            // store.state.breadcrumb.title = item?.title || item.meta.title
+            // store.state.breadcrumb.path = item.path
+            // store.state.breadcrumb.children = {
+            //   title: row.title || row.meta.title,
+            //   path: row.path
+            // }
+
           }
         })
       } else {
@@ -93,6 +102,16 @@ const useMenuEffect = () => {
   //菜单添加到Tab
   const addTabMenu = (item) => {
     store.dispatch('addTabMenu', { item })
+
+    console.log(item)
+    if(item.hasOwnProperty('parent_id')) {
+      const menuData = getMenus()
+      const parentObj = menuData[item.parent_id -1 ]
+      store.dispatch('setBreadcrumb', { item, parentObj })      
+    } else {
+      store.dispatch('setBreadcrumb', { item })
+    }
+
   }
   return { isTree, selectedMenuKey, openMenuKey, selectedMenu, addTabMenu }
 }

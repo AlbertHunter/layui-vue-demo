@@ -1,5 +1,7 @@
 import { createStore } from 'vuex'
 import { ref } from 'vue'
+import useCommonMenuEffect from '@/effects/menuEffect'
+
 const setLocalStorageTabMenu = (state) => {
   const { tabMenu } = state
   const tabMenuString = JSON.stringify(tabMenu)
@@ -16,13 +18,6 @@ const getLocalStorage = (key) => {
 
 export default createStore({
   state: {
-    tabMenu: [
-      {
-        "id": 1,
-        "title": "首页",
-        "path": "/dashboard/index"
-      }
-    ],
     tabList: {
       1:  {
         "id": 1,
@@ -32,7 +27,11 @@ export default createStore({
     },
     currentTab: 0,
     selectedMenuKey: 0,
-    openMenuKey: []
+    openMenuKey: [],
+    breadcrumb: {
+      title: '首页',
+      path: "/dashboard/index"
+    }
   },
   mutations: {
     addTabMenu (state, payload) {
@@ -47,6 +46,7 @@ export default createStore({
         state.tabList[item.id] = data
       }
       state.currentTab = item.id
+      return
     },
     closeTabMenu (state, payload) {
       const { id } = payload
@@ -67,6 +67,22 @@ export default createStore({
     setCurrentTab (state, payload) {
       const { id } = payload
       state.currentTab = id
+    },
+    setBreadcrumb (state, payload) {
+      const { item, parentObj } = payload
+      if(item.hasOwnProperty('parent_id')) {
+        state.breadcrumb.title = parentObj?.title || parentObj.meta.title
+        state.breadcrumb.path = parentObj.path
+        state.breadcrumb.children = {
+          title: item.title || item.meta.title,
+          path: item.path
+        }
+        
+      } else {
+        state.breadcrumb.title = item?.title || item.meta.title
+        state.breadcrumb.path = item.path
+        delete state.breadcrumb.children   
+      }
     }
   },
   actions: {
@@ -84,6 +100,9 @@ export default createStore({
     },
     setCurrentTab ( { commit }, data) {
       commit('setCurrentTab', data)
+    },
+    setBreadcrumb ( { commit }, data) {
+      commit('setBreadcrumb', data)
     }
   },
   modules: {

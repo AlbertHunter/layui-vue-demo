@@ -1,4 +1,4 @@
-import {useRouter} from "vue-router/dist/vue-router";
+import {useRouter} from "vue-router/dist/vue-router"
 
 const useCommonMenuEffect = () => {
     const router = useRouter()
@@ -14,6 +14,7 @@ const useCommonMenuEffect = () => {
           if(item.hasOwnProperty('children')) {
             const children = item.children.filter((row) => row?.show)
             item.children = children.map((v, index) => {
+              v.parent_id = i
               v.id = i * 100 + index
               return v
             })
