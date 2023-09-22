@@ -1,5 +1,5 @@
 <template>
-    <lay-menu v-model:selected-key="selectedKey" v-model:tree="isTree" v-model:open-keys="openKeys" :collapse="conf.collapse">
+    <lay-menu v-model:selected-key="selectedMenuKey" v-model:tree="isTree" v-model:open-keys="openMenuKey" :collapse="conf.collapse">
         <template v-for="item in menuData"  :key="item.path">
           <div v-if="!item.hasOwnProperty('children')">
             <router-link :to="item.path" @click="() => addTabMenu(item)">
@@ -38,7 +38,7 @@
 </template>
 
 <script setup name="Menu">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import {useRouter} from "vue-router/dist/vue-router";
 import useCommonMenuEffect from '@/effects/menuEffect'
@@ -52,13 +52,15 @@ const props = defineProps({
 const { getMenus } = useCommonMenuEffect()
 const useMenuEffect = () => {
   const isTree = ref(true)
-  const selectedKey = ref(0)
-  const openKeys = ref([])
-
-
-  // const selectedMenuKey = computet(() => store.state.selectedMenuKey)
-  // const openMenuKeys = computet(() => store.state.openMenuKey)
-  
+  const selectedMenuKey = computed({
+    get: () => store.state.selectedMenuKey,
+    set: (val) => store.state.selectedMenuKey = val
+  })
+  const openMenuKey = computed({ 
+    get: () => store.state.openMenuKey,
+    set: (val) => store.state.openMenuKey = val
+  })
+ 
   //设置菜单选中
   const selectedMenu = () => {
     //当前路径
@@ -69,14 +71,19 @@ const useMenuEffect = () => {
         const subMenu = item.children
         subMenu.map((row) => {
           if(row.path === path){
-            selectedKey.value = row.path
-            openKeys.value = item.path
+            // store.state.selectedMenuKey = row.path
+            // store.state.openMenuKey = item.path
+            const selectedKey = row.path
+            const openKey = item.path
+            store.dispatch('selectedMenu', { selectedKey, openKey })         
             addTabMenu(row)
           }
         })
       } else {
         if(path === menu_path) {
-          selectedKey.value = item.path
+          // store.state.selectedMenuKey = item.path
+          const selectedKey = item.path
+          store.dispatch('selectedMenu', { selectedKey })          
           addTabMenu(item)
           break
         }
@@ -87,14 +94,12 @@ const useMenuEffect = () => {
   const addTabMenu = (item) => {
     store.dispatch('addTabMenu', { item })
   }
-  return { isTree, selectedKey, openKeys, selectedMenu, addTabMenu }
+  return { isTree, selectedMenuKey, openMenuKey, selectedMenu, addTabMenu }
 }
 
-const { isTree, selectedKey, openKeys, selectedMenu, addTabMenu } = useMenuEffect()
+const { isTree, selectedMenuKey, openMenuKey, selectedMenu, addTabMenu } = useMenuEffect()
 const menuData = getMenus()
-console.log(menuData)
 selectedMenu()
-
 </script>
 <style lang='scss' scoped>
 .sub-menu {

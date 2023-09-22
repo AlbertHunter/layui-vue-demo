@@ -112,6 +112,7 @@ export default {
       defaultToolbar5,
       rowClick5,
       rowDoubleClick5,
+      maxHeight5,
       page5,
       change555
     }

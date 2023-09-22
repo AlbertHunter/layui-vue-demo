@@ -9,8 +9,8 @@
             <Header :conf="menuConf" :collapse="collapse" @collapseMenu="collapseMenu" />
         </lay-header>
         <lay-body>
-          <lay-tab type="card" allow-close class="tab-head-menu" v-model="currentTab" @change="changeTab" :beforeLeave="beforeLeaveTab" :beforeClose="beforeCloseTab" @close="closeTab">
-            <lay-tab-item :id="item.id" :title="item.title" v-for="(item, index) in tabMenu" :key="index" :closable="(item.id === 1) ? false : true"></lay-tab-item>
+          <lay-tab type="card" allow-close class="tab-head-menu" v-model="currentTab" @change="changeTab" :beforeLeave="beforeLeaveTab" @close="closeTab">
+            <lay-tab-item :id="item.id" :title="item.title" v-for="(item, index) in tabList" :key="index" :closable="(item.id === 1) ? false : true"></lay-tab-item>
           </lay-tab>
           <div class="global-content">
             <BodyContent/>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { ref, toRef, toRefs, reactive, computed } from 'vue'
+import { ref, toRefs, reactive, computed } from 'vue'
 import { useRouter } from "vue-router"
 import { useStore } from 'vuex'
 import Header from './Header'
@@ -43,92 +43,65 @@ export default {
           menuConf.collapse = !menuConf.collapse
         }
         const obj = toRefs(menuConf)
-        console.log(obj.collapse.value)
 
-
-
-      const tabMenu = computed(() => {
-        return store.state.tabList
-      })
       const tabList = computed(() => store.state.tabList)
-      const currentTab = computed(() => store.state.currentTab)
+      const currentTab = computed({
+        get: () => store.state.currentTab,
+        set: (val) => store.state.currentTab = val
+      })
+
+      //切换Tab菜单
       const changeTab = (id) => {
         let menu = {}
         if(tabList.value.hasOwnProperty(id)) {
           menu = tabList.value[id]
           router.push(menu.path)
         }
-        store.state.currentTab = id
-        selectedMenu(id)
+        store.dispatch('setCurrentTab', { id })
       }
-
-
-      // const selectedMenu = (id) => {
-      //   const menuData = getMenus()
-      //   const currentMenu = tabList.value[id]
-      //   const currentMenuPath = currentMenu.path
-      //   console.log(menuData)
-      //   console.log(currentMenuPath)
-      //   console.log(id)
-
-      //   for(const item of menuData) {
-      //     const menu_path = item?.redirect ? item?.redirect : item?.path
-      //     if(item.hasOwnProperty('children')) {
-      //       const subMenu = item.children
-      //       subMenu.map((row) => {
-      //         if(row.path === path){
-      //           selectedKey.value = row.path
-      //           openKeys.value = item.path
-      //         }
-      //       })
-      //     } else {
-      //       if(path === menu_path) {
-      //         selectedKey.value = item.path
-      //         break
-      //       }
-      //     }
-      //   }
-
-      // }
-
-
+      //切换标签之前的回调钩子函数
       const beforeLeaveTab = (id) => {
-        console.log(id)
+        selectedMenuKey(id)
       }
-
-      const beforeCloseTab = (id) => {
-        console.log(id, currentTab.value)
-        const currentId = currentTab.value
-
-        if(currentId === id) {
-          // const k =
-          const tabObj = tabList.value
-          Object.keys(tabObj).forEach((k) => {
-            console.log(k, tabObj[k])
-          }) 
+      //选中左侧菜单
+      const selectedMenuKey = (id) => {
+        const menuData = getMenus()
+        const currentMenu = tabList.value[id]
+        const currentMenuPath = currentMenu.path
+        for(const item of menuData) {
+          const menu_path = item?.redirect ? item?.redirect : item?.path
+          if(item.hasOwnProperty("children")) {
+            const subMenu = item.children
+            subMenu.map((row) => {
+              if(row.path === currentMenuPath){
+                // store.state.selectedMenuKey = row.path
+                // store.state.openMenuKey = item.path
+                const selectedKey = row.path
+                const openKey = item.path
+                store.dispatch('selectedMenu', { selectedKey, openKey })
+              }
+            })
+          } else {
+            if(currentMenuPath === menu_path) {
+              // store.state.selectedMenuKey = item.path
+              const selectedKey = item.path
+              store.dispatch('selectedMenu', { selectedKey })
+              break
+            }
+          }
         }
-        // return false
       }
+      //关闭Tab
       const closeTab = (id) => {
-          const nextId = parseInt(id + 1)
-          const prevId = parseInt(id - 1)
-        // const tabArr =tabMenu.value
-
-/*        if(currentTab.value === id) {
-          store.state.currentTab = id -1
-        }else {
-          store.state.currentTab = 2
-        }*/
         store.dispatch('closeTabMenu', { id })
       }
       return {
             menuConf,
             collapse,
             collapseMenu,
-            tabMenu,
+            tabList,
             currentTab,
             changeTab,
-            beforeCloseTab,
             beforeLeaveTab,
             closeTab
         }

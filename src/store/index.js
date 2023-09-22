@@ -42,7 +42,8 @@ export default createStore({
         "title": item.title || item.meta.title,
         "path": item.path
       }
-      if(typeof state.tabList[item.id] === 'undefined') {
+      // if(typeof state.tabList[item.id] === 'undefined') {
+      if(state.tabList.hasOwnProperty(item.id) === false) {
         state.tabList[item.id] = data
       }
       state.currentTab = item.id
@@ -50,10 +51,20 @@ export default createStore({
     closeTabMenu (state, payload) {
       const { id } = payload
       const newObj = Object.assign({}, state.tabList)
-      if(typeof newObj[id] !== 'undefined') delete newObj[id]
+      if(newObj.hasOwnProperty([id])) delete newObj[id]
+      // if(typeof newObj[id] !== 'undefined') delete newObj[id]
       state.tabList = newObj
     },
     changeTabMenu ( state, payload) {
+      const { id } = payload
+      state.currentTab = id
+    },
+    selectedMenu (state, payload) {
+      const { selectedKey, openKey } = payload
+      state.selectedMenuKey = selectedKey
+      if(typeof openKey !== 'undefined') state.openMenuKey = openKey
+    },
+    setCurrentTab (state, payload) {
       const { id } = payload
       state.currentTab = id
     }
@@ -67,6 +78,12 @@ export default createStore({
     },
     changeTabMenu ( { commit }, data) {
       commit('changeTabMenu', data)
+    },
+    selectedMenu ( { commit }, data) {
+      commit('selectedMenu', data)
+    },
+    setCurrentTab ( { commit }, data) {
+      commit('setCurrentTab', data)
     }
   },
   modules: {
