@@ -13,7 +13,6 @@ const getLocalStorage = (key) => {
   } else {
     return {}
   }
-  // return JSON.parse(localStorage.cartList) || {}
 }
 
 export default createStore({
@@ -77,7 +76,6 @@ export default createStore({
           title: item.title || item.meta.title,
           path: item.path
         }
-        
       } else {
         state.breadcrumb.title = item?.title || item.meta.title
         state.breadcrumb.path = item.path
