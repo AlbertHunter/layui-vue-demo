@@ -102,8 +102,6 @@ const useMenuEffect = () => {
   //菜单添加到Tab
   const addTabMenu = (item) => {
     store.dispatch('addTabMenu', { item })
-
-    console.log(item)
     if(item.hasOwnProperty('parent_id')) {
       const menuData = getMenus()
       const parentObj = menuData[item.parent_id -1 ]
@@ -111,7 +109,6 @@ const useMenuEffect = () => {
     } else {
       store.dispatch('setBreadcrumb', { item })
     }
-
   }
   return { isTree, selectedMenuKey, openMenuKey, selectedMenu, addTabMenu }
 }

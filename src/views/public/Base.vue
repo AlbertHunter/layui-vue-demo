@@ -79,6 +79,8 @@ export default {
                 const selectedKey = row.path
                 const openKey = item.path
                 store.dispatch('selectedMenu', { selectedKey, openKey })
+                //设置面包屑
+                store.dispatch('setBreadcrumb', { item: row, parentObj: item })
               }
             })
           } else {
@@ -86,6 +88,8 @@ export default {
               // store.state.selectedMenuKey = item.path
               const selectedKey = item.path
               store.dispatch('selectedMenu', { selectedKey })
+              //设置面包屑
+              store.dispatch('setBreadcrumb', { item })
               break
             }
           }
